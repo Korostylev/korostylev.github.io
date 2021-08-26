@@ -9,7 +9,7 @@ function init() {
     // Создание метки
 	let placemark1 = new ymaps.Placemark(center, {
         hintContent: 'Собственный значок метки',
-        balloonContent: 'Это красивая метка',
+        balloonContent: 'Это красивая метка<br><img src="http://mousosh5.ucoz.net/_tbk/tbh/sbory.jpeg" height="150" width="200">',
     }, {
 		iconLayout: 'default#image',
 		iconImageHref: 'https://image.flaticon.com/icons/png/512/64/64113.png',
@@ -24,7 +24,7 @@ function init() {
             '<span class="description">Но это не точно</span>',
         // Зададим содержимое основной части балуна.
         balloonContentBody: 'А сюда можно html код. Ссылку на сайт, например <a href="http://mousosh5.ucoz.net/">5 школа</a><br>'+
-        'или картинку<br><img src="http://mousosh5.ucoz.net/_tbk/tbh/sbory.jpeg" height="150" width="200"',
+        'или картинку<br><img src="http://mousosh5.ucoz.net/_tbk/tbh/sbory.jpeg" height="150" width="200">',
         // Зададим содержимое нижней части балуна.
         balloonContentFooter: 'А это подпись',
         // Зададим содержимое всплывающей подсказки.
