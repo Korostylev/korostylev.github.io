@@ -1,20 +1,33 @@
 <!DOCTYPE html>
 <html lang="ru">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Чтение файла</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
 </head>
-<body>
-  <a>Ключ   :   </a><input type="file" id="fileKey"><br>
-  <a>Файлы   :   </a><input type="file" id="multiFileDate" multiple />
-  <button id="btnEncryptor">Применение</button>
+<body class="body">
+  <header class="header">
+    <h1>Шифрование файлов онлайн</h1>
+  </header>
+  <div class="main">
+    <div class="left_div">
+      <div class="menu">
+        <a class="subtitle">Ключ   :   <input class="input_file" type="file" id="fileKey"></a>
+        <a class="subtitle">Файлы   :   <input class="input_file" type="file" id="multiFileDate" multiple /></a>
+        <div class="btn_container"><button class="btnEncryptor" id="btnEncryptor">Применение</button></div>
+      </div>
+      <div class="divOutListFiles" id="divOutListFiles"></div>
+    </div>
+    <div class="right_div">
+      <div class="divOutMedia" id="divOutMedia">
 
-  <br><br><br>
-  <div id="divOutListFiles">Out HTML</div>
-  <br>
-  <div id="divOutMedia"></div>
-
+      </div>
+    </div>
+  </div>
+  
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
   <script src="script.js"></script>
 </body>
