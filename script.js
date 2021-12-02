@@ -4,6 +4,10 @@ const idFileKey = "fileKey";
 const idFiles = "multiFileDate";
 const testKey = new Uint8Array([2,1,4,7,8,15]);
 
+function getRandomInRange(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+
 function downloadFile(filename, data) 
 {
     var a = document.createElement('a');
@@ -59,20 +63,22 @@ function createDownloadButton(file) {
         let reader = new FileReader();
         reader.readAsArrayBuffer(file);
 
-        const fileKey = document.getElementById(idFileKey).files[0];
-        let readerKey = new FileReader();
-        readerKey.readAsArrayBuffer(fileKey);
-
         reader.onload = function() {
             const result = reader.result;
             const view = new Uint8Array(result);
 
-            const resultKey = readerKey.result;
-            const viewKey = new Uint8Array(resultKey);
-            
-            console.log(view);
+            const fileKey = document.getElementById(idFileKey).files[0];
+            let readerKey = new FileReader();
+            readerKey.readAsArrayBuffer(fileKey);
 
-            downloadFile(name, byteXOR(view, viewKey));
+            readerKey.onload = function() {
+                const resultKey = readerKey.result;
+                const viewKey = new Uint8Array(resultKey);
+
+                console.log(view);
+                console.log(viewKey);
+                downloadFile(name, byteXOR(view, viewKey));
+            }
         }
     };
     return button;
@@ -90,40 +96,43 @@ function createOpenTextButton(file) {
         let reader = new FileReader();
         reader.readAsArrayBuffer(file);
 
-        const fileKey = document.getElementById(idFileKey).files[0];
-        let readerKey = new FileReader();
-        readerKey.readAsArrayBuffer(fileKey);
-
+        // Новое
         reader.onload = function() {
             const result = reader.result;
             const view = new Uint8Array(result);
 
-            const resultKey = readerKey.result;
-            const viewKey = new Uint8Array(resultKey);
+            const fileKey = document.getElementById(idFileKey).files[0];
+            let readerKey = new FileReader();
+            readerKey.readAsArrayBuffer(fileKey);
 
-            const file = byteXOR(view, viewKey);
+            readerKey.onload = function() {
+                const resultKey = readerKey.result;
+                const viewKey = new Uint8Array(resultKey);
 
-            let text = new TextDecoder().decode(file);
+                const file = byteXOR(view, viewKey);
+
+                let text = new TextDecoder().decode(file);
 
 
-            let div = document.createElement('div');
-            div.className = "mediaContent";
-            let a = document.createElement('a');
-            a.innerHTML = text;
-            a.className = "minText";
-            a.addEventListener('click', function() {
-                // console.log('text');
-                var i_path = $(this).text();
-                $('body').append('<div id="overlay"></div><div id="magnify"><div class="bigTextBG"><a>'+i_path+'</a></div><div id="close-popup"><i></i></div></div>');
-                $('#magnify').css({
-                left: ($(document).width() - $('#magnify').outerWidth())/2,
-                        top: ($(window).height() - $('#magnify').outerHeight())/2
+                let div = document.createElement('div');
+                div.className = "mediaContent";
+                let a = document.createElement('a');
+                a.innerHTML = text;
+                a.className = "minText";
+                a.addEventListener('click', function() {
+                    // console.log('text');
+                    var i_path = $(this).text();
+                    $('body').append('<div id="overlay"></div><div id="magnify"><div class="bigTextBG"><a>'+i_path+'</a></div><div id="close-popup"><i></i></div></div>');
+                    $('#magnify').css({
+                    left: ($(document).width() - $('#magnify').outerWidth())/2,
+                            top: ($(window).height() - $('#magnify').outerHeight())/2
+                    });
+                    $('#overlay, #magnify').fadeIn('fast');
                 });
-                $('#overlay, #magnify').fadeIn('fast');
-            });
-            div.appendChild(a);
+                div.appendChild(a);
 
-            document.getElementById(idDivMedia).appendChild(div);
+                document.getElementById(idDivMedia).appendChild(div);
+            }
         }
     };
     return button;
@@ -141,40 +150,43 @@ function createOpenImageButton(file) {
         let reader = new FileReader();
         reader.readAsArrayBuffer(file);
 
-        const fileKey = document.getElementById(idFileKey).files[0];
-        let readerKey = new FileReader();
-        readerKey.readAsArrayBuffer(fileKey);
-
+                // Новое
         reader.onload = function() {
             const result = reader.result;
             const view = new Uint8Array(result);
 
-            const resultKey = readerKey.result;
-            const viewKey = new Uint8Array(resultKey);
+            const fileKey = document.getElementById(idFileKey).files[0];
+            let readerKey = new FileReader();
+            readerKey.readAsArrayBuffer(fileKey);
 
-            const file = byteXOR(view, viewKey);
+            readerKey.onload = function() {
+                const resultKey = readerKey.result;
+                const viewKey = new Uint8Array(resultKey);
 
-            let blob = new Blob([file], {type: "application/octet-stream"});
-            let url = window.URL.createObjectURL(blob);
+                const file = byteXOR(view, viewKey);
 
-            let div = document.createElement('div');
-            div.className = "mediaContent";
-            let img = document.createElement('img');
-            img.className = "minImg";
-            img.src = url;
-            img.alt = name;
-            img.addEventListener('click', function() {
-                var i_path = $(this).attr('src');
-                $('body').append('<div id="overlay"></div><div id="magnify"><img src="'+i_path+'"><div id="close-popup"><i></i></div></div>');
-                $('#magnify').css({
-                left: ($(document).width() - $('#magnify').outerWidth())/2,
-                        top: ($(window).height() - $('#magnify').outerHeight())/2
+                let blob = new Blob([file], {type: "application/octet-stream"});
+                let url = window.URL.createObjectURL(blob);
+
+                let div = document.createElement('div');
+                div.className = "mediaContent";
+                let img = document.createElement('img');
+                img.className = "minImg";
+                img.src = url;
+                img.alt = name;
+                img.addEventListener('click', function() {
+                    var i_path = $(this).attr('src');
+                    $('body').append('<div id="overlay"></div><div id="magnify"><img src="'+i_path+'"><div id="close-popup"><i></i></div></div>');
+                    $('#magnify').css({
+                    left: ($(document).width() - $('#magnify').outerWidth())/2,
+                            top: ($(window).height() - $('#magnify').outerHeight())/2
+                    });
+                    $('#overlay, #magnify').fadeIn('fast');
                 });
-                $('#overlay, #magnify').fadeIn('fast');
-            });
-            div.appendChild(img);
+                div.appendChild(img);
 
-            document.getElementById(idDivMedia).appendChild(div);
+                document.getElementById(idDivMedia).appendChild(div);
+            }
         }
     };
     return button;
@@ -192,28 +204,49 @@ function createOpenVideoButton(file) {
         let reader = new FileReader();
         reader.readAsArrayBuffer(file);
 
-        const fileKey = document.getElementById(idFileKey).files[0];
-        let readerKey = new FileReader();
-        readerKey.readAsArrayBuffer(fileKey);
-
+                // Новое
         reader.onload = function() {
             const result = reader.result;
             const view = new Uint8Array(result);
-            
-            const resultKey = readerKey.result;
-            const viewKey = new Uint8Array(resultKey);
 
-            const file = byteXOR(view, viewKey);
+            const fileKey = document.getElementById(idFileKey).files[0];
+            let readerKey = new FileReader();
+            readerKey.readAsArrayBuffer(fileKey);
 
-            let blob = new Blob([file], {type: "application/octet-stream"});
-            let url = window.URL.createObjectURL(blob);
+            readerKey.onload = function() {
+                const resultKey = readerKey.result;
+                const viewKey = new Uint8Array(resultKey);
 
-            const htmlCode = '<div class="mediaContent"><video src="' + url + '" controls="controls" class="minVideo"></video></div>';
-            createText(htmlCode, idDivMedia);
+                const file = byteXOR(view, viewKey);
+
+                let blob = new Blob([file], {type: "application/octet-stream"});
+                let url = window.URL.createObjectURL(blob);
+
+                const htmlCode = '<div class="mediaContent"><video src="' + url + '" controls="controls" class="minVideo"></video></div>';
+                createText(htmlCode, idDivMedia);
+            }
         }
     };
     return button;
 }
+
+document.getElementById('btnGenKey').addEventListener('click', function() {
+    let arrKey = [];
+
+    const lenKey = getRandomInRange(200000,300000);
+    for (i = 0; i < lenKey; i++) {
+        // console.log(i + ' - ' + getRandomInRange(0, 256));
+        arrKey.push(getRandomInRange(0, 255));
+    }
+    // console.log(arrKey);
+
+    const view = new Uint8Array(arrKey);
+    // console.log(view);
+
+    downloadFile('key', view);
+
+    // console.log(255^254);
+});
 
 document.getElementById('btnEncryptor').addEventListener('click', function() {
     const containerId = idDivListFiles;
@@ -235,6 +268,16 @@ document.getElementById('btnEncryptor').addEventListener('click', function() {
 
         document.getElementById(containerId).appendChild(div);
     }
+});
+
+document.getElementById('btnInfo').addEventListener('click', function() {
+    var i_path = 'Данный проект не является коммерческим. Он создан в ознакомительных целях и не несет высокой криптостойкости. Автор не несет ответственности за потерю целостности данных. Все операции над данными осуществляются локально (без загрузки на сервер), поэтому возможность дешифровать данные есть только у Вас. <br>Уточнения для использования сервиса:<br>1. В поле "Ключ" вибирается файл, который будет являться ключем шифровки и дешифровки файла.<br>2. Чтобы дешифровать файл необходимо применить повторную шифровку с тем же ключем к уже ранее зашифрованному файлу.<br>3. На странице без скачивания на компьютер может отобразиться информация только если она была верно дешифрована и выбрано верное представление данных.';
+    $('body').append('<div id="overlay"></div><div id="magnify"><div class="bigTextBG"><a>'+i_path+'</a></div><div id="close-popup"><i></i></div></div>');
+    $('#magnify').css({
+    left: ($(document).width() - $('#magnify').outerWidth())/2,
+            top: ($(window).height() - $('#magnify').outerHeight())/2
+    });
+    $('#overlay, #magnify').fadeIn('fast');
 });
 
   $(function(){  
