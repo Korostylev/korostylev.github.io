@@ -248,6 +248,106 @@ document.getElementById('btnGenKey').addEventListener('click', function() {
     // console.log(255^254);
 });
 
+function dlAll(filesDate, viewKey, start, end, delay) {
+    if(start >= end) {
+        console.log("End!");
+        return false;
+    }
+
+    const name = filesDate[start].name;
+    
+    let reader = new FileReader();
+    reader.readAsArrayBuffer(filesDate[start]);
+    
+    reader.onload = function() {
+        const result = reader.result;
+        const view = new Uint8Array(result);
+
+        downloadFile(name, byteXOR(view, viewKey));
+    }
+
+    console.log(name + ' DL ' + start);
+    setTimeout(() => {
+      dlAll(filesDate, viewKey, start + 1, end, delay);
+    }, delay * 1000);
+}
+
+document.getElementById('btnDLall').addEventListener('click', function() {
+    const filesDate = document.getElementById(idFiles).files;
+
+    const fileKey = document.getElementById(idFileKey).files[0];
+    let readerKey = new FileReader();
+    readerKey.readAsArrayBuffer(fileKey);
+
+    readerKey.onload = function() {
+        const resultKey = readerKey.result;
+        const viewKey = new Uint8Array(resultKey);
+
+        dlAll(filesDate, viewKey, 0, filesDate.length, 1);
+    }
+});
+
+function openImgAll(filesDate, viewKey, start, end, delay) {
+    if(start >= end) {
+        console.log("End!");
+        return false;
+    }
+
+    const name = filesDate[start].name;
+    
+    let reader = new FileReader();
+    reader.readAsArrayBuffer(filesDate[start]);
+    
+    reader.onload = function() {
+        const result = reader.result;
+        const view = new Uint8Array(result);
+
+        const file = byteXOR(view, viewKey);
+
+                let blob = new Blob([file], {type: "application/octet-stream"});
+                let url = window.URL.createObjectURL(blob);
+
+                let div = document.createElement('div');
+                div.className = "mediaContent";
+                let img = document.createElement('img');
+                img.className = "minImg";
+                img.src = url;
+                img.alt = name;
+                img.addEventListener('click', function() {
+                    var i_path = $(this).attr('src');
+                    $('body').append('<div id="overlay"></div><div id="magnify"><img src="'+i_path+'"><div id="close-popup"><i></i></div></div>');
+                    $('#magnify').css({
+                    left: ($(document).width() - $('#magnify').outerWidth())/2,
+                            top: ($(window).height() - $('#magnify').outerHeight())/2
+                    });
+                    $('#overlay, #magnify').fadeIn('fast');
+                });
+                div.appendChild(img);
+
+                document.getElementById(idDivMedia).appendChild(div);
+    }
+
+    console.log(name + ' OPENED ' + start);
+    setTimeout(() => {
+        openImgAll(filesDate, viewKey, start + 1, end, delay);
+    }, delay * 1000);
+}
+
+document.getElementById('btnOpenImgAll').addEventListener('click', function() {
+    const filesDate = document.getElementById(idFiles).files;
+
+    const fileKey = document.getElementById(idFileKey).files[0];
+    let readerKey = new FileReader();
+    readerKey.readAsArrayBuffer(fileKey);
+
+    readerKey.onload = function() {
+        const resultKey = readerKey.result;
+        const viewKey = new Uint8Array(resultKey);
+
+        openImgAll(filesDate, viewKey, 0, filesDate.length, 0.3);
+    }
+});
+
 document.getElementById('btnEncryptor').addEventListener('click', function() {
     const containerId = idDivListFiles;
     const filesDate = document.getElementById(idFiles).files;
